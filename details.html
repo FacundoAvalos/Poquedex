@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="poke.png" type="image/x-icon">
+    <title>Poquedex 🍚</title>
+</head>
+<body>
+    
+    <header>
+        <div>
+            <img src="poke.png" alt="">
+            <h1>POQUEDEX</h1>
+            <img src="poke.png" alt="">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="favoritos.html">Favoritos</a></li>
+                <li><a href="#footer">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <div class="detallesPokemon">
+
+        </div>
+    </section>
+    <footer id="footer">
+        <p>Facundo Avalos - DWM3AP</p>
+        <p>Aplicaciones Web Progresivas</p>
+    </footer>
+    <script src="app.js"></script>    
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const pokemonId = urlParams.get('id');
+        obtainDetail(pokemonId);
+    </script>
+    </body>
+</html>

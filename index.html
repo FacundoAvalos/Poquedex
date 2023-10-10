@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <link rel="shortcut icon" href="poke.png" type="image/x-icon">
+        <title>Avalos Facundo - DWM3AP - 2023 🍚</title>
+    </head>
+<body>
+    
+    <header>
+        <div>
+            <img src="poke.png" alt="">
+            <h1>POQUEDEX</h1>
+            <img src="poke.png" alt="">
+        </div>
+        <div>
+            <span>🔍</span>
+            <input id="search" placeholder="Pikachu...." type="search">
+            <button onclick="buscarPokemonPorNombre(document.getElementById('search').value)">Buscar</button>
+
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="favoritos.html">Favoritos</a></li>
+                <li><a href="#footer">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <div class="pokemons"></div>
+        </section>
+
+        <div id="errorApi" class="d-none">
+            <h2 class="text-center">Error al cargar las cartas, intente nuevamente</h2>
+        </div>
+    </main>
+
+    <footer id="footer">
+        <p>Facundo Avalos - DWM3AP</p>
+        <p>Aplicaciones Web Progresivas</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
