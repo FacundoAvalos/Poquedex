@@ -3,6 +3,8 @@ const PAGE_SIZE = 151;
 let favoritos = [];
 let cardAPI = {};
 
+
+
 const getPokemon = async (offset = 0) => {
     try {
         const response = await fetch(`${API}/pokemon?offset=${offset}&limit=${PAGE_SIZE}`);
@@ -84,8 +86,8 @@ function obtainDetail(name){
             <div class="listamapliada">
                <div class="listapok">
                     <img src="poke.png" width="50" alt="">
-                    <img src="${pokemon.sprites.front_default}" alt="">
-                    <p class="nombrepokemon">${pokemon.name} </p>
+                    <img src="${pokemon.sprites.front_shiny}" alt="">
+                    <img src="${pokemon.sprites.back_shiny}" alt="">
                     <p>${pokemon.types.map((type) => type.type.name).join(', ')}</p>
                     </div>
             </div>
@@ -115,7 +117,10 @@ function obtainDetail(name){
                         `).join('')}
                     </ul>
                 </div>
-                <button class="botonFav" onclick="addToFavorites('${pokemon.name}')">Agregar a Favoritos⭐</button>
+                <div class="botonClass">
+                    <button class="botonFav" onclick="addToFavorites('${pokemon.name}')">Favoritos⭐</button>
+                    <button class="botonFav" onclick="quitFavorites('${pokemon.name}')">Eliminar💔</button>
+                </div>
             </div>
         </div>
         `
@@ -124,24 +129,18 @@ function obtainDetail(name){
 }
 
 function addToFavorites(pokemonName) {
-    // Verificar si el Pokémon ya está en favoritos
     const existsInFavorites = favoritos.some((pokemon) => pokemon.name === pokemonName);
 
     if (!existsInFavorites) {
-        // Obtener los datos del Pokémon que se está agregando (similar a obtainDetail)
         pokemonDetail(pokemonName)
             .then((pokemonData) => {
-                // Agregar el Pokémon a la lista de favoritos
                 favoritos.push({
                     name: pokemonData.name,
                     imageUrl: pokemonData.sprites.front_default,
                     type: pokemonData.types.map((type) => type.type.name).join(', ')
                 });
 
-                // Almacenar la lista de favoritos actualizada en el almacenamiento local
                 localStorage.setItem('favoritos', JSON.stringify(favoritos));
-
-                // Puedes mostrar un mensaje de confirmación o realizar otras acciones aquí
             })
             .catch((error) => {
                 console.error("Error al obtener información del Pokémon:", error);
@@ -151,8 +150,19 @@ function addToFavorites(pokemonName) {
     }
 }
 
+function quitFavorites(pokemonName) {
+    const index = favoritos.findIndex((pokemon) => pokemon.name === pokemonName);
+
+    if (index !== -1) {
+        favoritos.splice(index, 1);
+        localStorage.setItem('favoritos', JSON.stringify(favoritos));
+    } else {
+        alert('Este Pokémon no está en tus favoritos.');
+    }
+}
+
 function showFavorites() {
-    favoritos = JSON.parse(localStorage.getItem('favoritos')) || []; // Inicializa favoritos desde el almacenamiento local si existen
+    favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
     
     const cardsContainer = document.querySelector('.cards');
     cardsContainer.innerHTML = '';
@@ -226,7 +236,6 @@ function mostrarResultadosDeBusqueda(resultados) {
         cardsContainer.appendChild(pokemonElement);
     });
 }
-
 
 
 mostrarTodasLasCartas();
