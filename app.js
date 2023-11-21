@@ -25,47 +25,24 @@ const pokemonDetail = async (id) => {
     }
 }
 
-function mostrarTodasLasCartas() {
-    getPokemon()
-        .then(async (pokemonList) => {
-            const pokemonsContainer = document.querySelector(".pokemons");
-            pokemonsContainer.innerHTML = "";
+const mostrarTodasLasCartas = async () => {
+    let pokemonList;
 
-            const promises = pokemonList.map((card) => {
-                return pokemonDetail(card.name)
-                    .then((pokemon) => {
-                        const pokemonElement = document.createElement('a');
-                        pokemonElement.className = 'apokemon';
-                        pokemonElement.href = `details.html?id=${pokemon.name}`
-                        pokemonElement.innerHTML = `
-                            <div class="listamapliada">
-                                <div class="listapok">
-                                    <img src="poke.png" width="40px" alt="pokeball">
-                                    <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
-                                    <p>N.º ${pokemon.id}</p>
-                                    <p class="nombrepokemon">${pokemon.name}</p>
-                                    <p>${pokemon.types.map((type) => type.type.name).join(', ')}</p>
-                                </div>
-                            </div>
-                        `;
+    try {
+        pokemonList = obtenerDatosDesdeLocalStorage();
 
-                        pokemonsContainer.appendChild(pokemonElement);
-                    })
-                    .catch((error) => {
-                        console.error(`Error al obtener el Pokémon ${card.name}:`, error);
-                    });
-            });
+        if (!pokemonList) {
+            pokemonList = await obtenerDatosDesdeAPI();
+        }
 
-            return Promise.all(promises);
-        })
-        .catch((error) => {
-            document.querySelector('#errorApi').classList.remove("d-none");
-            console.error(error);
-        })
-        .finally(() => {
-            console.info('ANDUVO');
-        });
-}
+        mostrarCartasEnDOM(pokemonList);
+    } catch (error) {
+        document.querySelector('#errorApi').classList.remove('d-none');
+        console.error(error);
+    } finally {
+        console.info('ANDUVO');
+    }
+};
 
 function obtainDetail(name){
     const pokemon = pokemonDetail(name)
@@ -237,6 +214,58 @@ function mostrarResultadosDeBusqueda(resultados) {
     });
 }
 
+
+const obtenerDatosDesdeAPI = async () => {
+    try {
+        const pokemonList = await getPokemon();
+        localStorage.setItem('datosIniciales', JSON.stringify(pokemonList));
+        return pokemonList;
+    } catch (error) {
+        console.error('Error al obtener datos desde la API:', error);
+        throw error;
+    }
+};
+
+
+const obtenerDatosDesdeLocalStorage = () => {
+    const datosGuardados = localStorage.getItem('datosIniciales');
+    return datosGuardados ? JSON.parse(datosGuardados) : null;
+};
+
+const mostrarCartasEnDOM = (pokemonList) => {
+    const pokemonsContainer = document.querySelector('.pokemons');
+    pokemonsContainer.innerHTML = '';
+
+    const promises = pokemonList.map((card) => {
+        return pokemonDetail(card.name)
+            .then((pokemon) => {
+                const pokemonElement = document.createElement('a');
+                pokemonElement.className = 'apokemon';
+                pokemonElement.href = `details.html?id=${pokemon.name}`
+                pokemonElement.innerHTML = `
+                    <div class="listamapliada">
+                        <div class="listapok">
+                            <img src="poke.png" width="40px" alt="pokeball">
+                            <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+                            <p>N.º ${pokemon.id}</p>
+                            <p class="nombrepokemon">${pokemon.name}</p>
+                            <p>${pokemon.types.map((type) => type.type.name).join(', ')}</p>
+                        </div>
+                    </div>
+                `;
+
+                pokemonsContainer.appendChild(pokemonElement);
+            })
+            .catch((error) => {
+                console.error(`Error al obtener el Pokémon ${card.name}:`, error);
+            });
+    });
+
+    Promise.all(promises)
+        .catch((error) => {
+            console.error(error);
+        });
+};
 
 mostrarTodasLasCartas();
 showFavorites();
