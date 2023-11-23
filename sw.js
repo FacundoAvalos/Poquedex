@@ -1,52 +1,69 @@
 var cacheStatic = 'cache';
 
 self.addEventListener('install', function (event) {
-    console.log('SW instalado', event); // installEvent
+    console.log('SW instalado', event);
     event.waitUntil(
         caches.open(cacheStatic)
             .then(function (cache) {
-                cache.addAll(
-                    ['estilos/estilos.css',
-                        'index.html',
-                        'favorites.html',
-                        'css/main.css',
-                        'assets/img/logo.png',
-                        'assets/img/hero-home.jpeg',
-                        'assets/img/No-Image-Placeholder.png'
-                    ]
-                )
-            }));
+                return cache.addAll([
+                    'style.css',
+                    'index.html',
+                    'favoritos.html',
+                    'poke.png',
+                ]);
+            })
+            .catch(function (error) {
+                console.error('Error al intentar almacenar en caché:', error);
+            })
+    );
 });
+
+
 self.addEventListener('activate', function (event) {
     console.log('SW activado', event);
 });
 
 //cache dinamico
 var cacheDynamic = 'dynamic';
+// ...
+
 self.addEventListener('fetch', function (event) {
-    event.respondWith(caches.match(event.request)
-        .then(function (response) {
+    event.respondWith(
+        caches.match(event.request).then(function (response) {
             if (response) {
                 return response;
             }
-            var requestToCache = event.request.clone(); // Clona la solicitud: una solicitud es un flujo y se puede consumir una vez.
+
+            var requestToCache = event.request.clone();
+
+            // Verifica el esquema de la solicitud
+            if (requestToCache.url.startsWith('chrome-extension://')) {
+                return fetch(requestToCache);
+            }
+
             return fetch(requestToCache)
-                .then( // Trata de hacer la solicitud HTTP original según lo previsto.
-                    function (response) {
-                        if (!response || response.status !== 200) { //Si la solicitud falla o el servidor responde con un código de error, devolvelo inmediatamente
-                            return response;
-                        }
-                        var responseToCache = response.clone(); // Nuevamente, clona la respuesta porque necesitamos agregarla al caché y porque se usa para la respuesta final
-                        caches.open(cacheDynamic) // Abre el cache.
-                            .then(function (cache) {
-                                cache.put(requestToCache, responseToCache); //Añadir respuesta en caché.
-                                console.log('SW actualizado');
-                            });
+                .then(function (response) {
+                    if (!response || response.status !== 200) {
                         return response;
+                    }
+
+                    var responseToCache = response.clone();
+
+                    // Cambiamos la forma de almacenar en caché
+                    return caches.open(cacheDynamic).then(function (cache) {
+                        return cache.put(new Request(event.request.url), responseToCache);
                     });
+                })
+                .catch(function (error) {
+                    console.error('Error al intentar realizar la solicitud:', error);
+                });
         })
     );
 });
+
+// ...
+
+
 
 // Notificaciones push
 self.addEventListener("push", function (e) {
