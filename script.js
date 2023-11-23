@@ -61,14 +61,14 @@ if ('serviceWorker' in navigator) {
 
         //API Share
         (function () {
-
+            
             document.querySelector('.share').addEventListener('click', function () {
 
                 if (navigator.share) {
                     navigator.share({
                         title: 'PWA APIS',
                         text: 'Ejemplo de api share ',
-                        url: 'https://mtg-finder.netlify.app/',
+                        url: 'https://friendly-salamander-3d6f89.netlify.app/',
                     })
                         .then(function () {
                             console.log("Se compartió")
@@ -82,7 +82,7 @@ if ('serviceWorker' in navigator) {
                 }
             });
 
-        })()
+        })
 
     }); //load
 
