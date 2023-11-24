@@ -140,26 +140,28 @@ function quitFavorites(pokemonName) {
 
 function showFavorites() {
     favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
-    
     const cardsContainer = document.querySelector('.cards');
-    cardsContainer.innerHTML = '';
-
-    favoritos.forEach((pokemon) => {
-        const pokemonElement = document.createElement('a');
-        pokemonElement.className = 'apokemon';
-        pokemonElement.href = `details.html?id=${pokemon.name}`
-        pokemonElement.innerHTML = `
-            <div class="listamapliada">
-                <div class="listapok">
-                    <img src="poke.png" width="40px" alt="pokeball">
-                    <img src="${pokemon.imageUrl}" alt="${pokemon.name}">
-                    <p class="nombrepokemon">${pokemon.name}</p>
-                    <p>${pokemon.type}</p>
+    if(cardsContainer){
+        cardsContainer.innerHTML = '';
+    
+        favoritos.forEach((pokemon) => {
+            const pokemonElement = document.createElement('a');
+            pokemonElement.className = 'apokemon';
+            pokemonElement.href = `details.html?id=${pokemon.name}`
+            pokemonElement.innerHTML = `
+                <div class="listamapliada">
+                    <div class="listapok">
+                        <img src="poke.png" width="40px" alt="pokeball">
+                        <img src="${pokemon.imageUrl}" alt="${pokemon.name}">
+                        <p class="nombrepokemon">${pokemon.name}</p>
+                        <p>${pokemon.type}</p>
+                    </div>
                 </div>
-            </div>
-        `;
-        cardsContainer.appendChild(pokemonElement);
-    });
+            `;
+            cardsContainer.appendChild(pokemonElement);
+        });
+
+    }
 }
 
 

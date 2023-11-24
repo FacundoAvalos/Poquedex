@@ -88,9 +88,11 @@ if ('serviceWorker' in navigator) {
 
 }
 
+
+
 //funcion anónima auto-ejecutable. Todo lo que hay dentro está aislado del resto del código de la página. Agregar a pantalla de inicio
 (function () {
-
+    console.log("Instalar")
     var aviso;
 
     window.addEventListener('beforeinstallprompt', function (e) {
